@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Exportar DataTable</title>
+        <style>
+            body {
+                background: url("resources/images/table.jpg");
+                margin: 0;
+                padding: 2em;
+                font-family: geneva, arial, helvetica, sans-serif;
+                font-size:80%;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:outputText value="Primefaces DataExporter" style="font-size:3em;color:#443113;" />
+        <h:form id="frm">
+            <p:growl id="growl" />
+            <p:panel id="pnl" header="Nuevo Usuario" style="margin-top:10px">
+                <p:messages id="messages" />
+                
+                <h:panelGrid columns="3" id="grid" cellpadding="5">
+                    <p:outputLabel for="name" value="Nombres" />
+                    <p:inputText id="name" value="#{beanPerson.person.name}" required="true" />
+                    <p:message for="name" />
+                    
+                    <p:outputLabel for="lastname" value="Apellidos" />
+                    <p:inputText id="lastname" value="#{beanPerson.person.lastname}" required="true"/>
+                    <p:message for="lastname" />
+                    
+                    <p:outputLabel for="age" value="Edad" />
+                    <p:inputText id="age" value="#{beanPerson.person.age}" required="true"/>
+                    <p:message for="age" />
+                </h:panelGrid>
+            </p:panel>                        
+            <p:toolbar>
+                <f:facet name="left">
+                    <p:commandButton id="add" value="Agregar" icon="ui-icon-document" actionListener="#{beanPerson.add()}" update="frm" oncomplete="handleForm(xhr, status, args)"/>
+                    <p:tooltip id="toolTipGrowAdd" for="add" value="Agregar usuario" showEffect="clip" hideEffect="explode" />
+                </f:facet>
+
+                <f:facet name="right">
+                     <h:commandLink id="pdf" style="margin-right:20px;">
+                        <h:graphicImage url="resources/images/pdf.png" />
+                        <p:dataExporter type="pdf" target="dtPersons" fileName="pdfUsers" />
+                    </h:commandLink>
+                    <p:tooltip id="toolTipGrowPdf" for="pdf" value="Descargar en PDF" showEffect="clip" hideEffect="explode" />
+
+                     <h:commandLink id="xls">
+                        <h:graphicImage url="resources/images/xls.png" />
+                        <p:dataExporter type="xls" target="dtPersons" fileName="xlsUsers" />
+                    </h:commandLink>
+                    <p:tooltip id="toolTipGrowXls" for="xls" value="Descargar en XLS" showEffect="clip" hideEffect="explode" />
+                </f:facet>
+            </p:toolbar>
+            <p:blockUI block="pnl" trigger="add">
+                Cargando...<br/>
+                <p:graphicImage value="resources/images/loading.gif"/>
+            </p:blockUI> 
+            <p:dataTable id="dtPersons" value="#{beanPerson.list}" var="p" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                         rowsPerPageTemplate="5,10,15" style="margin-top:20px;">
+                
+                <p:column headerText="Nombres" filterBy="#{p.name}" filterMatchMode="contains">
+                <p:outputLabel value="#{p.name}" />
+                </p:column>
+                
+                <p:column headerText="Apellidos" filterBy="#{p.lastname}" filterMatchMode="contains">
+                    <p:outputLabel value="#{p.lastname}" />
+                </p:column>
+                
+                <p:column headerText="Edad" filterBy="#{p.age}" filterMatchMode="exact">
+                    <p:outputLabel value="#{p.age}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+
